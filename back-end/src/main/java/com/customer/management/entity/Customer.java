@@ -1,6 +1,8 @@
 package com.customer.management.entity;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,9 +35,20 @@ public class Customer {
     @Column(unique = true, nullable = false)
     private String nic;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Phone>  phones;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @ManyToMany
+    @JoinTable(
+            name = "customer_family",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "family_member_id")
+    )
+    @JsonIgnore
+    private List<Customer> familyMembers;
 }

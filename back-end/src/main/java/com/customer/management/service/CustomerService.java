@@ -50,6 +50,8 @@ public class CustomerService {
             existing.setName(updatedCustomer.getName());
             existing.setDob(updatedCustomer.getDob());
             existing.setNic(updatedCustomer.getNic());
+            existing.setPhones(updatedCustomer.getPhones());
+            existing.setAddresses(updatedCustomer.getAddresses());
 
             return customerRepository.save(existing);
         }

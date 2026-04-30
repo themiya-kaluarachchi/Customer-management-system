@@ -5,6 +5,7 @@ import com.customer.management.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public Customer  create(@RequestBody Customer customer) {
+    public Customer  createCustomer(@Valid @RequestBody Customer customer) {
         return customerService.saveCustomer(customer);
     }
 
@@ -35,7 +36,7 @@ public class CustomerController {
         return customerService.updateCustomer(id, customer);
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public void deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
     }
