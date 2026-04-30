@@ -50,8 +50,27 @@ public class CustomerService {
             existing.setName(updatedCustomer.getName());
             existing.setDob(updatedCustomer.getDob());
             existing.setNic(updatedCustomer.getNic());
-            existing.setPhones(updatedCustomer.getPhones());
-            existing.setAddresses(updatedCustomer.getAddresses());
+
+            if (existing.getPhones() != null && updatedCustomer.getPhones() != null) {
+                for (int i = 0; i < existing.getPhones().size(); i++) {
+                    Phone existingPhone = existing.getPhones().get(i);
+                    Phone updatedPhone = updatedCustomer.getPhones().get(i);
+
+                    existingPhone.setNumber(updatedPhone.getNumber());
+                }
+            }
+
+            if (existing.getAddresses() != null && updatedCustomer.getAddresses() != null) {
+                for (int i = 0; i < existing.getAddresses().size(); i++) {
+                    Address existingAddress = existing.getAddresses().get(i);
+                    Address updatedAddress = updatedCustomer.getAddresses().get(i);
+
+                    existingAddress.setLine1(updatedAddress.getLine1());
+                    existingAddress.setLine2(updatedAddress.getLine2());
+                    existingAddress.setCity(updatedAddress.getCity());
+                    existingAddress.setCountry(updatedAddress.getCountry());
+                }
+            }
 
             return customerRepository.save(existing);
         }
