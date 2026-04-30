@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./layout/Layout";
 import CustomerDetails from "./pages/CustomerDetails";
 import Dashboard from "./pages/Dashboard";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
@@ -36,8 +37,9 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index  element={<Dashboard />} />
+          <Route path="/"       element={<LandingPage />} />
+          <Route  element={<Layout />}>
+            <Route path="dashboard"  element={<Dashboard />} />
             <Route path="customers" element={<CustomerList />} />
             <Route path="add" element={<AddCustomer />} />
             <Route path="edit/:id" element={<AddCustomer />} />

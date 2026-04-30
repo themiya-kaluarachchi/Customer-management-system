@@ -15,8 +15,12 @@ export default function SidebarContent({ onClose }) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <img src={logo} alt="CMS" className="w-10 h-10 rounded-xl object-cover" />
+        <Link to="/" onClick={onClose} className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt="CMS"
+            className="w-10 h-10 rounded-xl object-cover"
+          />
           <div>
             <span className="text-white font-display font-bold text-base leading-tight block">
               CMS Lanka
@@ -25,7 +29,7 @@ export default function SidebarContent({ onClose }) {
               Customer Management
             </span>
           </div>
-        </div>
+        </Link>
         {onClose && (
           <button
             onClick={onClose}
