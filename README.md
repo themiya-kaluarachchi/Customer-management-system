@@ -1,33 +1,46 @@
 # Customer Management System
 
-## Tech Stack
-- Java 8
-- Spring Boot 2.7
-- MariaDB
-- Maven
+## 🚀 Features
 
-## Features
-- Create Customer
-- Update Customer
-- View Customer
-- Bulk Upload (Excel)
+* Create, update, delete customers
+* Manage phone numbers and addresses
+* Bulk upload customers via Excel
+* Input validation and error handling
 
-## Setup Instructions
-1. Create database: customer_db
-2. Configure application.properties
-3. Run: mvn spring-boot:run
+## 🛠 Tech Stack
 
+* Java 8
+* Spring Boot
+* Spring Data JPA
+* MariaDB
+* Apache POI
 
-## Setup
-1. Navigate to `src/main/resources`
-2. Rename `application-example.properties` to `application.properties`
-3. Update your database password
-4. Run the project
+## 📦 Setup Instructions
 
+1. Clone the repository
+2. Create database: `customer_db`
+3. Configure `application.properties`
+4. Run the project:
 
-## Excel Upload
-Use the endpoint:
-> POST /api/customers/upload
+   ```
+   mvn spring-boot:run
+   ```
 
-Upload the file:
-> docs/sample-customers.xlsx
+## 📊 Excel Upload
+
+Endpoint:
+
+```
+POST /api/customers/upload
+```
+
+Use file:
+
+```
+docs/sample-customers.xlsx
+```
+
+## 📌 Notes
+
+* Phone and Address support one-to-many relationships
+* Family members implemented as self-referencing relationship
