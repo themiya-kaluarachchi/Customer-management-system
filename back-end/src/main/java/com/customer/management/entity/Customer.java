@@ -26,7 +26,7 @@ public class Customer {
     private String name;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "date_of_birth" ,nullable = false)
     private LocalDate dob;
 
     @NotBlank
