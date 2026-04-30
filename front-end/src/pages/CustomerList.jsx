@@ -106,6 +106,7 @@ export default function CustomerList() {
           customers={paginated}
           loading={loading}
           onDeleteClick={setDeleteTarget}
+          offset={(currentPage -1) * PAGE_SIZE}
         />
         <Pagination
           currentPage={currentPage}

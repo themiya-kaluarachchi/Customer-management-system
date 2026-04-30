@@ -1,7 +1,7 @@
 import { FaSearch, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function CustomerTable({ customers, loading, onDeleteClick }) {
+export default function CustomerTable({ customers, loading, onDeleteClick, offset = 0 }) {
   const navigate = useNavigate();
 
   if (loading)
@@ -26,7 +26,7 @@ export default function CustomerTable({ customers, loading, onDeleteClick }) {
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50/80 border-b border-gray-100">
-            {["ID", "Customer", "NIC", "DOB", "Phone", "City", "Actions"].map((h) => (
+            {["No.", "ID", "Customer", "NIC", "DOB", "Phone", "City", "Actions"].map((h) => (
               <th
                 key={h}
                 className={`px-4 py-3 text-[11px] font-semibold text-textMuted uppercase tracking-wider first:pl-5 ${h === "Actions" ? "text-center" : "text-left"}`}
@@ -38,13 +38,17 @@ export default function CustomerTable({ customers, loading, onDeleteClick }) {
         </thead>
 
         <tbody className="divide-y divide-gray-50">
-          {customers.map((c) => (
+          {customers.map((c, index) => (
             <tr
               key={c.id}
               className="hover:bg-gray-50/70 cursor-pointer transition-colors group"
               onClick={() => navigate(`/view/${c.id}`)}
             >
-              <td className="pl-5 pr-3 py-3.5 text-xs text-textMuted/60 font-mono">{c.id}</td>
+              <td className="pl-5 pr-3 py-3.5 text-xs text-textMuted/40 font-mono w-10">
+                {offset + index + 1}
+              </td>
+
+              <td className="px-4 py-3.5 text-xs text-textMuted/60 font-mono">{c.id}</td>
 
               <td className="px-4 py-3.5">
                 <div className="flex items-center gap-2.5">
