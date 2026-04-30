@@ -11,54 +11,12 @@ import {
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import Field from "../components/add-customer/Field";
+import Section from "../components/add-customer/Section";
 
-// ── Reusable styled input ──────────────────────────────────────────────────
-function Field({ label, icon: Icon, required, ...props }) {
-  return (
-    <div>
-      <label className="block text-xs font-semibold text-textMuted uppercase tracking-wide mb-1.5">
-        {label}
-        {required && <span className="text-red-400 ml-0.5">*</span>}
-      </label>
-      <div className="relative">
-        {Icon && (
-          <Icon
-            size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted pointer-events-none"
-          />
-        )}
-        <input
-          className={`w-full ${Icon ? "pl-9" : "pl-3.5"} pr-3.5 py-2.5 text-sm border border-gray-200 rounded-xl
-            bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary
-            transition-all placeholder:text-gray-300`}
-          {...props}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ── Section wrapper ─────────────────────────────────────────────────────────
-function Section({ title, icon: Icon, children }) {
-  return (
-    <div className="bg-surface rounded-2xl shadow-card p-5">
-      <div className="flex items-center gap-2.5 mb-5">
-        <div className="w-7 h-7 bg-primary/10 text-primary rounded-lg flex items-center justify-center flex-shrink-0">
-          <Icon size={12} />
-        </div>
-        <h2 className="text-xs font-bold text-textMuted uppercase tracking-widest">
-          {title}
-        </h2>
-      </div>
-      <div className="space-y-4">{children}</div>
-    </div>
-  );
-}
-
-// ── Component ───────────────────────────────────────────────────────────────
 export default function AddCustomer() {
-  const { id }     = useParams();
-  const navigate   = useNavigate();
+  const { id }   = useParams();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -68,7 +26,6 @@ export default function AddCustomer() {
     addresses: [{ line1: "", line2: "", city: "", country: "" }],
   });
 
-  // LOAD CUSTOMER FOR EDIT  (logic unchanged)
   useEffect(() => {
     if (id) {
       API.get(`/customers/${id}`)
@@ -77,7 +34,6 @@ export default function AddCustomer() {
     }
   }, [id]);
 
-  // SUBMIT  (logic unchanged)
   const handleSubmit = () => {
     if (!form.name || !form.nic || !form.dob) {
       toast.error("Fill required fields");
@@ -85,11 +41,11 @@ export default function AddCustomer() {
     }
 
     const payload = {
-      name:      form.name,
-      nic:       form.nic,
-      dob:       form.dob,
-      phones:    form.phones[0]?.number    ? form.phones    : [],
-      addresses: form.addresses[0]?.line1  ? form.addresses : [],
+      name: form.name,
+      nic: form.nic,
+      dob: form.dob,
+      phones: form.phones[0]?.number ? form.phones  : [],
+      addresses: form.addresses[0]?.line1 ? form.addresses : [],
     };
 
     if (id) {
@@ -105,7 +61,8 @@ export default function AddCustomer() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-      {/* ── Header ── */}
+
+      {/* Header */}
       <div className="flex items-center gap-3">
         <Link
           to="/customers"
@@ -123,7 +80,7 @@ export default function AddCustomer() {
         </div>
       </div>
 
-      {/* ── Basic Info ── */}
+      {/* Basic Info */}
       <Section title="Basic Information" icon={FaUser}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2">
@@ -146,7 +103,7 @@ export default function AddCustomer() {
         </div>
       </Section>
 
-      {/* ── Phone ── */}
+      {/* Phone */}
       <Section title="Contact Number" icon={FaPhone}>
         <Field
           label="Mobile Number" icon={FaPhone} placeholder="e.g. 0771234567"
@@ -157,7 +114,7 @@ export default function AddCustomer() {
         />
       </Section>
 
-      {/* ── Address ── */}
+      {/* Address */}
       <Section title="Address" icon={FaMapMarkerAlt}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2">
@@ -165,10 +122,7 @@ export default function AddCustomer() {
               label="Address Line 1" placeholder="Street address"
               value={form.addresses[0]?.line1 || ""}
               onChange={(e) =>
-                setForm({
-                  ...form,
-                  addresses: [{ ...form.addresses[0], line1: e.target.value }],
-                })
+                setForm({ ...form, addresses: [{ ...form.addresses[0], line1: e.target.value }] })
               }
             />
           </div>
@@ -177,10 +131,7 @@ export default function AddCustomer() {
               label="Address Line 2" placeholder="Apartment, suite, etc. (optional)"
               value={form.addresses[0]?.line2 || ""}
               onChange={(e) =>
-                setForm({
-                  ...form,
-                  addresses: [{ ...form.addresses[0], line2: e.target.value }],
-                })
+                setForm({ ...form, addresses: [{ ...form.addresses[0], line2: e.target.value }] })
               }
             />
           </div>
@@ -188,26 +139,20 @@ export default function AddCustomer() {
             label="City" placeholder="City"
             value={form.addresses[0]?.city || ""}
             onChange={(e) =>
-              setForm({
-                ...form,
-                addresses: [{ ...form.addresses[0], city: e.target.value }],
-              })
+              setForm({ ...form, addresses: [{ ...form.addresses[0], city: e.target.value }] })
             }
           />
           <Field
             label="Country" placeholder="Country"
             value={form.addresses[0]?.country || ""}
             onChange={(e) =>
-              setForm({
-                ...form,
-                addresses: [{ ...form.addresses[0], country: e.target.value }],
-              })
+              setForm({ ...form, addresses: [{ ...form.addresses[0], country: e.target.value }] })
             }
           />
         </div>
       </Section>
 
-      {/* ── Actions ── */}
+      {/* Actions */}
       <div className="flex items-center justify-end gap-3 pb-6">
         <Link
           to="/customers"
