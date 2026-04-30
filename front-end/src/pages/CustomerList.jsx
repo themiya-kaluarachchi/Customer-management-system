@@ -4,20 +4,24 @@ import { FaUserPlus } from "react-icons/fa";
 import { useLocation, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import SearchBar from "../components/customer-list/SearchBar";
-import CustomerTable from "../components/customer-list//CustomerTable";
-import DeleteModal from "../components/customer-list//DeleteModal";
+import CustomerTable from "../components/customer-list/CustomerTable";
+import DeleteModal from "../components/customer-list/DeleteModal";
+import Pagination from "../components/customer-list/Pagination";
+
+const PAGE_SIZE = 10;
 
 export default function CustomerList() {
-  const [customers, setCustomers] = useState([]);
-  const [searchId, setSearchId]  = useState("");
-  const [loading, setLoading]  = useState(true);
+  const [customers, setCustomers]       = useState([]);
+  const [searchId, setSearchId]         = useState("");
+  const [loading, setLoading]           = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [currentPage, setCurrentPage]   = useState(1);
   const location = useLocation();
 
   const fetchCustomers = () => {
     setLoading(true);
     API.get("/customers")
-      .then((res) => setCustomers(res.data))
+      .then((res) => { setCustomers(res.data); setCurrentPage(1); })
       .catch(() => toast.error("Failed to load customers"))
       .finally(() => setLoading(false));
   };
@@ -29,7 +33,7 @@ export default function CustomerList() {
       try {
         setLoading(true);
         const res = await API.get("/customers");
-        if (isMounted) setCustomers(res.data);
+        if (isMounted) { setCustomers(res.data); setCurrentPage(1); }
       } catch {
         toast.error("Failed to load customers");
       } finally {
@@ -44,7 +48,7 @@ export default function CustomerList() {
   const handleSearch = () => {
     if (!searchId) { fetchCustomers(); return; }
     API.get(`/customers/${searchId}`)
-      .then((res) => setCustomers([res.data]))
+      .then((res) => { setCustomers([res.data]); setCurrentPage(1); })
       .catch(() => toast.error("Customer not found"));
   };
 
@@ -63,6 +67,13 @@ export default function CustomerList() {
       })
       .catch(() => toast.error("Delete failed"));
   };
+
+  // ── Pagination derived state ──
+  const totalPages = Math.ceil(customers.length / PAGE_SIZE);
+  const paginated  = customers.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
   return (
     <div className="space-y-5 max-w-6xl mx-auto">
@@ -92,9 +103,14 @@ export default function CustomerList() {
           onClear={handleClear}
         />
         <CustomerTable
-          customers={customers}
+          customers={paginated}
           loading={loading}
           onDeleteClick={setDeleteTarget}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
       </div>
 

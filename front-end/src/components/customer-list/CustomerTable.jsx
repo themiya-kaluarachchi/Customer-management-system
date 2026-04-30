@@ -26,7 +26,7 @@ export default function CustomerTable({ customers, loading, onDeleteClick }) {
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50/80 border-b border-gray-100">
-            {["#", "Customer", "NIC", "DOB", "Phone", "City", "Actions"].map((h) => (
+            {["ID", "Customer", "NIC", "DOB", "Phone", "City", "Actions"].map((h) => (
               <th
                 key={h}
                 className={`px-4 py-3 text-[11px] font-semibold text-textMuted uppercase tracking-wider first:pl-5 ${h === "Actions" ? "text-center" : "text-left"}`}
