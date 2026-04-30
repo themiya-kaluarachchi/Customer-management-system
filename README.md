@@ -28,5 +28,6 @@
 ## Excel Upload
 Use the endpoint:
 > POST /api/customers/upload
+
 Upload the file:
 > docs/sample-customers.xlsx
