@@ -1,23 +1,38 @@
 import { Toaster } from "react-hot-toast";
-import AddCustomer from "./components/AddCustomer";
-import UploadExcel from "./components/UploadExcel";
-import CustomerList from "./components/CustomerList";
+import AddCustomer from "./pages/AddCustomer";
+import UploadExcel from "./pages/UploadExcel";
+import CustomerList from "./pages/CustomerList";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./layout/Layout";
+import CustomerDetails from "./pages/CustomerDetails";
 
 function App() {
-  <Toaster position="top-right" />
- 
   return (
-   <div className="max-w-3xl mx-auto mt-10">
-    <h1 className="text-2xl font-bold mb-4">
-      Customer Management
-    </h1>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
 
-    <AddCustomer />
-    <UploadExcel />
-    <CustomerList />
-
-   </div>
-  )
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<CustomerList />} />
+            <Route path="customers" element={<CustomerList />} />
+            <Route path="add" element={<AddCustomer />} />
+            <Route path="edit/:id" element={<AddCustomer />} />
+            <Route path="upload" element={<UploadExcel />} />
+            <Route path="view/:id" element={<CustomerDetails />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
-export default App
+export default App;
