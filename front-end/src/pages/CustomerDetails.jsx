@@ -11,27 +11,12 @@ import {
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-
-// ── Single info row ──────────────────────────────────────────────────────────
-function InfoRow({ icon: Icon, label, value }) {
-  return (
-    <div className="flex items-start gap-3 py-3.5 border-b border-gray-50 last:border-0">
-      <div className="w-8 h-8 rounded-xl bg-primary/8 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-        <Icon size={12} />
-      </div>
-      <div>
-        <p className="text-[10px] font-semibold text-textMuted uppercase tracking-widest">
-          {label}
-        </p>
-        <p className="text-textMain font-medium text-sm mt-0.5">{value || "—"}</p>
-      </div>
-    </div>
-  );
-}
+import InfoRow from "../components/customer-details/InfoRow";
+import ProfileBanner from "../components/customer-details/ProfileBanner";
 
 export default function CustomerDetails() {
-  const { id }      = useParams();
-  const navigate    = useNavigate();
+  const { id }     = useParams();
+  const navigate   = useNavigate();
   const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
@@ -52,7 +37,8 @@ export default function CustomerDetails() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-      {/* ── Top bar ── */}
+
+      {/* Top bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
@@ -76,34 +62,21 @@ export default function CustomerDetails() {
         </Link>
       </div>
 
-      {/* ── Profile banner card ── */}
-      <div className="bg-surface rounded-2xl shadow-card overflow-hidden">
-        {/* Gradient strip */}
-        <div className="h-20 bg-gradient-to-r from-primary via-secondary to-primaryLight" />
+      {/* Profile banner */}
+      <ProfileBanner customer={customer} />
 
-        <div className="px-5 pb-5 -mt-8">
-          <div className="w-16 h-16 rounded-2xl bg-white shadow-lg border-2 border-white flex items-center justify-center text-2xl font-display font-bold text-primary mb-3">
-            {customer.name?.charAt(0).toUpperCase()}
-          </div>
-          <h2 className="text-xl font-display font-bold text-textMain">
-            {customer.name}
-          </h2>
-          <p className="text-textMuted text-sm mt-0.5 font-mono">{customer.nic}</p>
-        </div>
-      </div>
-
-      {/* ── Personal info ── */}
+      {/* Personal info */}
       <div className="bg-surface rounded-2xl shadow-card p-5">
         <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
           Personal Information
         </p>
-        <InfoRow icon={FaUser}        label="Full Name"     value={customer.name} />
-        <InfoRow icon={FaIdCard}      label="NIC Number"    value={customer.nic} />
+        <InfoRow icon={FaUser}  label="Full Name"  value={customer.name} />
+        <InfoRow icon={FaIdCard} label="NIC Number" value={customer.nic} />
         <InfoRow icon={FaCalendarAlt} label="Date of Birth" value={customer.dob} />
-        <InfoRow icon={FaPhone}       label="Phone"         value={customer.phones?.[0]?.number} />
+        <InfoRow icon={FaPhone} label="Phone"  value={customer.phones?.[0]?.number} />
       </div>
 
-      {/* ── Address (only if data exists) ── */}
+      {/* Address (only if data exists) */}
       {customer.addresses?.[0]?.line1 && (
         <div className="bg-surface rounded-2xl shadow-card p-5">
           <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
