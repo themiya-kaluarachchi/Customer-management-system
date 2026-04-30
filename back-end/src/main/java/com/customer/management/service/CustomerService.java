@@ -77,7 +77,13 @@ public class CustomerService {
         return null;
     }
 
+
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);
+    }
+
+
+    public List<Customer> saveAll(List<Customer> customers) {
+        return customerRepository.saveAll(customers);
     }
 }

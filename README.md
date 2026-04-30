@@ -23,3 +23,10 @@
 2. Rename `application-example.properties` to `application.properties`
 3. Update your database password
 4. Run the project
+
+
+## Excel Upload
+Use the endpoint:
+> POST /api/customers/upload
+Upload the file:
+> docs/sample-customers.xlsx
