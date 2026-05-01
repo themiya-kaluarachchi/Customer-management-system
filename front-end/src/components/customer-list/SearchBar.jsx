@@ -1,37 +1,109 @@
-import { FaSearch, FaTimes } from "react-icons/fa";
+import { FaSearch, FaTimes, FaFileExcel } from "react-icons/fa";
 
-export default function SearchBar({ searchId, onChange, onSearch, onClear }) {
+/**
+ * SearchBar
+ * Props:
+ *  - searchQuery  : string  — current search text
+ *  - onChange     : fn(value) — called on every keystroke (live filter)
+ *  - onClear      : fn()   — clears search
+ *  - onExport     : fn()   — triggers Excel export / download
+ *  - exporting    : bool   — shows spinner on export button while downloading
+ *  - totalShown   : number — how many records currently visible (after filter)
+ *  - totalAll     : number — total records before filter
+ */
+export default function SearchBar({
+  searchQuery,
+  onChange,
+  onClear,
+  onExport,
+  exporting = false,
+  totalShown,
+  totalAll,
+}) {
   return (
-    <div className="px-5 py-4 border-b border-gray-100 flex flex-wrap gap-2 items-center">
-      <div className="relative">
-        <FaSearch
-          size={12}
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted"
-        />
-        <input
-          className="pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl w-56 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary transition-all bg-gray-50 focus:bg-white"
-          placeholder="Search by ID…"
-          value={searchId}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onSearch()}
-        />
+    <div
+      className="px-5 py-4 flex flex-wrap gap-2 items-center justify-between"
+      style={{ borderBottom: "1px solid #f1f5f9" }}
+    >
+      {/* ── Left: search input ── */}
+      <div className="flex flex-wrap gap-2 items-center">
+        <div className="relative">
+          <FaSearch
+            size={12}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: "var(--color-textMuted)" }}
+          />
+          <input
+            className="pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl w-64
+              focus:outline-none transition-all bg-gray-50 focus:bg-white"
+            style={{
+              "--tw-ring-color": "rgba(15,76,92,0.25)",
+              focusBorderColor: "var(--color-primary)",
+            }}
+            placeholder="Search by name or NIC…"
+            value={searchQuery}
+            onChange={(e) => onChange(e.target.value)}
+            // No onKeyDown needed — filtering is live (on every keystroke)
+          />
+        </div>
+
+        {/* Clear button — only shown when there is a query */}
+        {searchQuery && (
+          <button
+            onClick={onClear}
+            className="flex items-center gap-1.5 text-sm border border-gray-200 hover:bg-gray-50
+              px-3 py-2.5 rounded-xl transition-colors"
+            style={{ color: "var(--color-textMuted)" }}
+          >
+            <FaTimes size={11} /> Clear
+          </button>
+        )}
+
+        {/* Record count badge */}
+        {totalAll !== undefined && (
+          <span
+            className="text-xs px-2.5 py-1 rounded-full font-medium"
+            style={{
+              backgroundColor: "rgba(15,76,92,0.08)",
+              color: "var(--color-primary)",
+            }}
+          >
+            {searchQuery
+              ? `${totalShown} of ${totalAll} records`
+              : `${totalAll} total records`}
+          </span>
+        )}
       </div>
 
+      {/* ── Right: Export button ── */}
       <button
-        onClick={onSearch}
-        className="bg-primary hover:bg-secondary text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
+        onClick={onExport}
+        disabled={exporting}
+        className="flex items-center gap-2 text-white px-4 py-2.5 rounded-xl text-sm
+          font-medium shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed
+          hover:-translate-y-0.5"
+        style={{ backgroundColor: "#217346" }} // Excel green — universally recognised
+        onMouseEnter={(e) => {
+          if (!exporting) e.currentTarget.style.backgroundColor = "#185c38";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "#217346";
+        }}
       >
-        Search
+        {exporting ? (
+          <>
+            <div
+              className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"
+            />
+            Exporting…
+          </>
+        ) : (
+          <>
+            <FaFileExcel size={13} />
+            Export Excel
+          </>
+        )}
       </button>
-
-      {searchId && (
-        <button
-          onClick={onClear}
-          className="flex items-center gap-1.5 text-textMuted border border-gray-200 hover:bg-gray-50 px-3 py-2.5 rounded-xl text-sm transition-colors"
-        >
-          <FaTimes size={11} /> Clear
-        </button>
-      )}
     </div>
   );
 }

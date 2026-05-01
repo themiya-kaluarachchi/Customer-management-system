@@ -3,14 +3,19 @@ package com.customer.management.controller;
 import com.customer.management.dto.UploadResponse;
 import com.customer.management.entity.Customer;
 import com.customer.management.service.CustomerService;
+import com.customer.management.util.ExcelExportHelper;
 import com.customer.management.util.ExcelHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +29,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public Customer  createCustomer(@Valid @RequestBody Customer customer) {
+    public Customer createCustomer(@Valid @RequestBody Customer customer) {
         return customerService.saveCustomer(customer);
     }
 
@@ -48,6 +53,46 @@ public class CustomerController {
         customerService.deleteCustomer(id);
     }
 
+    // ── NEW: Search by name or NIC ────────────────────────────────────────────
+    // GET /api/customers/search?query=Themiya
+    // Returns all customers whose name OR nic contains the query (case-insensitive)
+    @GetMapping("/search")
+    public ResponseEntity<List<Customer>> searchCustomers(
+            @RequestParam(name = "query", defaultValue = "") String query) {
+
+        if (query.trim().isEmpty()) {
+            return ResponseEntity.ok(customerService.getAllCustomers());
+        }
+        return ResponseEntity.ok(customerService.searchByNameOrNic(query));
+    }
+
+    // ── NEW: Export all customers to Excel ────────────────────────────────────
+    // GET /api/customers/export
+    // Returns a .xlsx file download
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportToExcel() {
+        try {
+            List<Customer> customers = customerService.getAllCustomers();
+            byte[] excelBytes = ExcelExportHelper.customersToExcel(customers);
+
+            String filename = "customers_" +
+                    LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +
+                    ".xlsx";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentLength(excelBytes.length);
+
+            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // ── Existing: Bulk upload ─────────────────────────────────────────────────
     @PostMapping("/upload")
     public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
 
@@ -63,56 +108,38 @@ public class CustomerController {
                     customerService.saveCustomer(customers.get(i));
                     successCount++;
                 } catch (Exception e) {
-                    errors.add("Row " + (i + 2) + ": " + e.getMessage()); // +2 = header row offset
+                    errors.add("Row " + (i + 2) + ": " + e.getMessage());
                 }
             }
 
-            UploadResponse response = new UploadResponse(
-                    totalRows,
-                    successCount,
-                    errors.size(),
-                    errors
-            );
-
+            UploadResponse response = new UploadResponse(totalRows, successCount, errors.size(), errors);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             UploadResponse response = new UploadResponse(
-                    0,
-                    0,
-                    1,
-                    Collections.singletonList("Failed to parse file: " + e.getMessage())
-            );
+                    0, 0, 1, Collections.singletonList("Failed to parse file: " + e.getMessage()));
             return ResponseEntity.badRequest().body(response);
         }
     }
 
-
+    // ── Existing: Family member endpoints ─────────────────────────────────────
     @GetMapping("/{id}/family")
     public ResponseEntity<List<Customer>> getFamilyMembers(@PathVariable Long id) {
-        List<Customer> members = customerService.getFamilyMembers(id);
-        return ResponseEntity.ok(members);
+        return ResponseEntity.ok(customerService.getFamilyMembers(id));
     }
-
 
     @PostMapping("/{id}/family/{memberId}")
     public ResponseEntity<Customer> addFamilyMember(
-            @PathVariable Long id,
-            @PathVariable Long memberId) {
-
+            @PathVariable Long id, @PathVariable Long memberId) {
         Customer updated = customerService.addFamilyMember(id, memberId);
         if (updated == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         return ResponseEntity.ok(updated);
     }
 
-
     @DeleteMapping("/{id}/family/{memberId}")
     public ResponseEntity<Void> removeFamilyMember(
-            @PathVariable Long id,
-            @PathVariable Long memberId) {
-
+            @PathVariable Long id, @PathVariable Long memberId) {
         customerService.removeFamilyMember(id, memberId);
         return ResponseEntity.noContent().build();
     }
 }
-

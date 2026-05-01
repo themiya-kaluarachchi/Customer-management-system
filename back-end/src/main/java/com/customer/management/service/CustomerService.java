@@ -140,4 +140,15 @@ public class CustomerService {
         customerRepository.save(member);
         return customerRepository.save(customer);
     }
+
+    public List<Customer> searchByNameOrNic(String query) {
+        String q = query.toLowerCase().trim();
+        return customerRepository.findAll()
+                .stream()
+                .filter(c ->
+                        (c.getName() != null && c.getName().toLowerCase().contains(q)) ||
+                                (c.getNic()  != null && c.getNic().toLowerCase().contains(q))
+                )
+                .collect(java.util.stream.Collectors.toList());
+    }
 }
