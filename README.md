@@ -45,7 +45,7 @@ This project was developed as a technical internship assignment for **Convergenc
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-link>
+git clone https://github.com/themiya-kaluarachchi/Customer-management-system.git
 cd project
 ```
 
@@ -61,26 +61,26 @@ CREATE DATABASE customer_db;
 
 Run SQL file:
 
-```bash
-DDL.sql
+```sql
+SOURCE DDL.sql;
+SOURCE DML.sql;
 ```
 
 ---
 
 ### 3. Configure Backend
 
-Go to:
+## 🔧 Configuration
 
-```
-back-end/src/main/resources/application.properties
-```
+1. Rename:
+   application-example.properties → application.properties
 
-Update:
+2. Update your database credentials:
 
-```
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
+   spring.datasource.username=root
+   spring.datasource.password=your_password
+
+3. Make sure MariaDB is running on port 3306
 
 ---
 
