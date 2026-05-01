@@ -105,7 +105,7 @@ public class CustomerController {
         return ResponseEntity.ok(updated);
     }
 
-    
+
     @DeleteMapping("/{id}/family/{memberId}")
     public ResponseEntity<Void> removeFamilyMember(
             @PathVariable Long id,
