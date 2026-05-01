@@ -161,6 +161,22 @@ docs/sample-customers.xlsx
 
 ---
 
+## 🧪 Testing
+
+Basic unit tests were implemented using JUnit to verify core functionality.
+
+### Included Tests
+- CustomerService test (create customer)
+- CustomerRepository test (save and retrieve customer)
+
+### Run Tests
+
+```bash
+mvn test
+```
+
+---
+
 ## 📌 Notes
 
 * Phone and Address use one-to-many relationships
