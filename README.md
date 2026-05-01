@@ -1,30 +1,132 @@
-# Customer Management System
+# CMS Lanka — Customer Management System
+
+A full-stack Customer Management System built using **Spring Boot (Java 8)**, **React (Vite)**, and **MariaDB**.
+
+This project was developed as a technical internship assignment for **Convergence Lanka (PVT) LTD** within a 4-day deadline.
+
+---
 
 ## 🚀 Features
 
 * Create, update, delete customers
-* Manage phone numbers and addresses
-* Bulk upload customers via Excel
-* Input validation and error handling
+* View full customer details
+* Manage multiple phone numbers & addresses
+* Family member relationships (self-referencing)
+* Search customers by ID
+* Bulk upload customers via Excel (.xlsx)
+* Dashboard with statistics (total, phone, address)
+* Responsive UI (mobile + desktop)
+
+---
 
 ## 🛠 Tech Stack
 
+### Backend
+
 * Java 8
-* Spring Boot
-* Spring Data JPA
+* Spring Boot 2.7
+* Spring Data JPA (Hibernate)
 * MariaDB
-* Apache POI
+* Apache POI (Excel processing)
+
+### Frontend
+
+* React (Vite)
+* Tailwind CSS v4
+* Axios
+* React Router DOM
+* React Hot Toast
+* React Icons
+
+---
 
 ## 📦 Setup Instructions
 
-1. Clone the repository
-2. Create database: `customer_db`
-3. Configure `application.properties`
-4. Run the project:
+### 1. Clone the Repository
 
-   ```
-   mvn spring-boot:run
-   ```
+```bash
+git clone <your-repo-link>
+cd project
+```
+
+---
+
+### 2. Setup Database (MariaDB)
+
+Create database:
+
+```sql
+CREATE DATABASE customer_db;
+```
+
+Run SQL file:
+
+```bash
+DDL.sql
+```
+
+---
+
+### 3. Configure Backend
+
+Go to:
+
+```
+back-end/src/main/resources/application.properties
+```
+
+Update:
+
+```
+spring.datasource.username=root
+spring.datasource.password=your_password
+```
+
+---
+
+### 4. Run Backend
+
+```bash
+cd back-end
+mvn spring-boot:run
+```
+
+Backend runs on:
+
+```
+http://localhost:8080
+```
+
+---
+
+### 5. Run Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs on:
+
+```
+http://localhost:5173
+```
+
+---
+
+## 📡 API Endpoints
+
+| Method | Endpoint              | Description           |
+| ------ | --------------------- | --------------------- |
+| GET    | /api/customers        | Get all customers     |
+| GET    | /api/customers/{id}   | Get customer by ID    |
+| POST   | /api/customers        | Create customer       |
+| PUT    | /api/customers/{id}   | Update customer       |
+| DELETE | /api/customers/{id}   | Delete customer       |
+| POST   | /api/customers/upload | Bulk upload via Excel |
+
+---
 
 ## 📊 Excel Upload
 
@@ -34,13 +136,41 @@ Endpoint:
 POST /api/customers/upload
 ```
 
-Use file:
+Sample file:
 
 ```
 docs/sample-customers.xlsx
 ```
 
+### Excel Format
+
+| Column | Field                      |
+| ------ | -------------------------- |
+| A      | Name                       |
+| B      | Date of Birth (YYYY-MM-DD) |
+| C      | NIC                        |
+
+---
+
+## 🗄️ Database Design
+
+* `customer` — main entity
+* `customer_mobile` — stores phone numbers
+* `customer_address` — stores addresses
+* `customer_family` — self-referencing relationships
+
+---
+
 ## 📌 Notes
 
-* Phone and Address support one-to-many relationships
-* Family members implemented as self-referencing relationship
+* Phone and Address use one-to-many relationships
+* Family members implemented using self-referencing relationship
+* Java 8 compatibility maintained (no modern Java features used)
+* Tailwind v4 used for styling (no tailwind.config.js)
+
+---
+
+## 👨‍💻 Author
+
+**Themiya Kaluarachchi**
+Software Engineering Undergraduate
