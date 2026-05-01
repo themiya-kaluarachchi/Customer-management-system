@@ -3,21 +3,23 @@ import { useEffect, useState } from "react";
 import API from "../services/api";
 import toast from "react-hot-toast";
 import {
-  FaArrowLeft,
-  FaEdit,
-  FaUser,
-  FaIdCard,
-  FaCalendarAlt,
-  FaPhone,
-  FaMapMarkerAlt,
+  FaArrowLeft, FaEdit, FaUser, FaIdCard,
+  FaCalendarAlt, FaPhone, FaMapMarkerAlt, FaUsers,
 } from "react-icons/fa";
 import InfoRow from "../components/customer-details/InfoRow";
 import ProfileBanner from "../components/customer-details/ProfileBanner";
+import FamilyTab from "../components/customer-details/FamilyTab";
+
+const TABS = [
+  { key: "profile", label: "Profile",        icon: FaUser  },
+  { key: "family",  label: "Family Members", icon: FaUsers },
+];
 
 export default function CustomerDetails() {
   const { id }     = useParams();
   const navigate   = useNavigate();
   const [customer, setCustomer] = useState(null);
+  const [activeTab, setActiveTab] = useState("profile");
 
   useEffect(() => {
     API.get(`/customers/${id}`)
@@ -48,9 +50,7 @@ export default function CustomerDetails() {
             <FaArrowLeft size={13} />
           </button>
           <div>
-            <h1 className="text-2xl font-display font-bold text-textMain">
-              Customer Profile
-            </h1>
+            <h1 className="text-2xl font-display font-bold text-textMain">Customer Profile</h1>
             <p className="text-textMuted text-sm">Record #{id}</p>
           </div>
         </div>
@@ -65,31 +65,54 @@ export default function CustomerDetails() {
       {/* Profile banner */}
       <ProfileBanner customer={customer} />
 
-      {/* Personal info */}
-      <div className="bg-surface rounded-2xl shadow-card p-5">
-        <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
-          Personal Information
-        </p>
-        <InfoRow icon={FaUser}  label="Full Name"  value={customer.name} />
-        <InfoRow icon={FaIdCard} label="NIC Number" value={customer.nic} />
-        <InfoRow icon={FaCalendarAlt} label="Date of Birth" value={customer.dob} />
-        <InfoRow icon={FaPhone} label="Phone"  value={customer.phones?.[0]?.number} />
+      {/* Tab bar */}
+      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+        {TABS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setActiveTab(key)}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all
+              ${activeTab === key
+                ? "bg-white text-textMain shadow-sm"
+                : "text-textMuted hover:text-textMain"
+              }`}
+          >
+            <Icon size={12} /> {label}
+          </button>
+        ))}
       </div>
 
-      {/* Address (only if data exists) */}
-      {customer.addresses?.[0]?.line1 && (
-        <div className="bg-surface rounded-2xl shadow-card p-5">
-          <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
-            Address
-          </p>
-          <InfoRow icon={FaMapMarkerAlt} label="Address Line 1" value={customer.addresses[0].line1} />
-          {customer.addresses[0].line2 && (
-            <InfoRow icon={FaMapMarkerAlt} label="Address Line 2" value={customer.addresses[0].line2} />
+      {/* Profile tab */}
+      {activeTab === "profile" && (
+        <>
+          <div className="bg-surface rounded-2xl shadow-card p-5">
+            <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
+              Personal Information
+            </p>
+            <InfoRow icon={FaUser}        label="Full Name"     value={customer.name} />
+            <InfoRow icon={FaIdCard}      label="NIC Number"    value={customer.nic} />
+            <InfoRow icon={FaCalendarAlt} label="Date of Birth" value={customer.dob} />
+            <InfoRow icon={FaPhone}       label="Phone"         value={customer.phones?.[0]?.number} />
+          </div>
+
+          {customer.addresses?.[0]?.line1 && (
+            <div className="bg-surface rounded-2xl shadow-card p-5">
+              <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
+                Address
+              </p>
+              <InfoRow icon={FaMapMarkerAlt} label="Address Line 1" value={customer.addresses[0].line1} />
+              {customer.addresses[0].line2 && (
+                <InfoRow icon={FaMapMarkerAlt} label="Address Line 2" value={customer.addresses[0].line2} />
+              )}
+              <InfoRow icon={FaMapMarkerAlt} label="City"    value={customer.addresses[0].city} />
+              <InfoRow icon={FaMapMarkerAlt} label="Country" value={customer.addresses[0].country} />
+            </div>
           )}
-          <InfoRow icon={FaMapMarkerAlt} label="City"    value={customer.addresses[0].city} />
-          <InfoRow icon={FaMapMarkerAlt} label="Country" value={customer.addresses[0].country} />
-        </div>
+        </>
       )}
+
+      {/* Family tab */}
+      {activeTab === "family" && <FamilyTab customerId={id} />}
     </div>
   );
 }

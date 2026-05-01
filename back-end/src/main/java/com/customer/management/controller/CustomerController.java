@@ -5,6 +5,7 @@ import com.customer.management.entity.Customer;
 import com.customer.management.service.CustomerService;
 import com.customer.management.util.ExcelHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,6 +85,34 @@ public class CustomerController {
             );
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+
+    @GetMapping("/{id}/family")
+    public ResponseEntity<List<Customer>> getFamilyMembers(@PathVariable Long id) {
+        List<Customer> members = customerService.getFamilyMembers(id);
+        return ResponseEntity.ok(members);
+    }
+
+
+    @PostMapping("/{id}/family/{memberId}")
+    public ResponseEntity<Customer> addFamilyMember(
+            @PathVariable Long id,
+            @PathVariable Long memberId) {
+
+        Customer updated = customerService.addFamilyMember(id, memberId);
+        if (updated == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(updated);
+    }
+
+    
+    @DeleteMapping("/{id}/family/{memberId}")
+    public ResponseEntity<Void> removeFamilyMember(
+            @PathVariable Long id,
+            @PathVariable Long memberId) {
+
+        customerService.removeFamilyMember(id, memberId);
+        return ResponseEntity.noContent().build();
     }
 }
 

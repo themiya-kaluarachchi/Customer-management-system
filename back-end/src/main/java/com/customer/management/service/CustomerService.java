@@ -7,6 +7,7 @@ import com.customer.management.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -96,7 +97,47 @@ public class CustomerService {
                 }
             }
         }
-
         return customerRepository.saveAll(customers);
+    }
+
+    public List<Customer> getFamilyMembers(Long id) {
+        Customer customer = customerRepository.findById(id).orElse(null);
+        if (customer == null) return Collections.emptyList();
+        return customer.getFamilyMembers();
+    }
+
+
+    public Customer addFamilyMember(Long id, Long memberId) {
+        Customer customer = customerRepository.findById(id).orElse(null);
+        Customer member   = customerRepository.findById(memberId).orElse(null);
+
+        if (customer == null || member == null) return null;
+        if (customer.getId().equals(memberId)) return null; // can't link to self
+
+        // Link both directions so the relationship is symmetric
+        if (!customer.getFamilyMembers().contains(member)) {
+            customer.getFamilyMembers().add(member);
+        }
+        if (!member.getFamilyMembers().contains(customer)) {
+            member.getFamilyMembers().add(customer);
+        }
+
+        customerRepository.save(member);
+        return customerRepository.save(customer);
+    }
+
+
+    public Customer removeFamilyMember(Long id, Long memberId) {
+        Customer customer = customerRepository.findById(id).orElse(null);
+        Customer member   = customerRepository.findById(memberId).orElse(null);
+
+        if (customer == null || member == null) return null;
+
+        // Remove both directions
+        customer.getFamilyMembers().remove(member);
+        member.getFamilyMembers().remove(customer);
+
+        customerRepository.save(member);
+        return customerRepository.save(customer);
     }
 }
