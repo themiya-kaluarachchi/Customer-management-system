@@ -6,9 +6,9 @@ import DropZone from "../components/upload-excel/DropZone";
 import UploadResult from "../components/upload-excel/UploadResult";
 
 export default function UploadExcel() {
-  const [file, setFile] = useState(null);
+  const [file, setFile]           = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult]       = useState(null);
   const [dragOver, setDragOver]   = useState(false);
 
   const handleUpload = () => {
@@ -17,10 +17,25 @@ export default function UploadExcel() {
     const formData = new FormData();
     formData.append("file", file);
     setUploading(true);
+    setResult(null);
 
     API.post("/customers/upload", formData)
-      .then((res) => { toast.success("Upload successful"); setResult(res.data); })
-      .catch((err) => { toast.error("Failed to upload file"); console.error(err); })
+      .then((res) => {
+        setResult(res.data);  // now always { totalRows, successCount, failureCount, errors[] }
+        if (res.data.failureCount === 0) {
+          toast.success(`Imported ${res.data.successCount} records successfully`);
+        } else {
+          toast.error(`${res.data.failureCount} rows failed — check errors below`);
+        }
+      })
+      .catch((err) => {
+        // backend sends UploadResponse even on badRequest now
+        const data = err.response?.data;
+        if (data && typeof data === "object") {
+          setResult(data);
+        }
+        toast.error("Upload failed — check errors below");
+      })
       .finally(() => setUploading(false));
   };
 
@@ -36,8 +51,6 @@ export default function UploadExcel() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-display font-bold text-textMain">Bulk Upload</h1>
         <p className="text-textMuted text-sm mt-0.5">

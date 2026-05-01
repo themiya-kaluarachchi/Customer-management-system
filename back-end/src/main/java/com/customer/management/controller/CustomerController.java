@@ -1,5 +1,6 @@
 package com.customer.management.controller;
 
+import com.customer.management.dto.UploadResponse;
 import com.customer.management.entity.Customer;
 import com.customer.management.service.CustomerService;
 import com.customer.management.util.ExcelHelper;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -45,16 +48,41 @@ public class CustomerController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String>  uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+
+        List<String> errors = new ArrayList<>();
+        int successCount = 0;
 
         try {
             List<Customer> customers = ExcelHelper.excelToCustomer(file.getInputStream());
-            customerService.saveAll(customers);
+            int totalRows = customers.size();
 
-            return ResponseEntity.ok("Excel uploaded successfully");
+            for (int i = 0; i < customers.size(); i++) {
+                try {
+                    customerService.saveCustomer(customers.get(i));
+                    successCount++;
+                } catch (Exception e) {
+                    errors.add("Row " + (i + 2) + ": " + e.getMessage()); // +2 = header row offset
+                }
+            }
+
+            UploadResponse response = new UploadResponse(
+                    totalRows,
+                    successCount,
+                    errors.size(),
+                    errors
+            );
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Upload failed: " + e.getMessage());
+            UploadResponse response = new UploadResponse(
+                    0,
+                    0,
+                    1,
+                    Collections.singletonList("Failed to parse file: " + e.getMessage())
+            );
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }
