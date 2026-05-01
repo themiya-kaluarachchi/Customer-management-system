@@ -1,4 +1,4 @@
-import logo from "../../../public/logo.png";
+import logo from "../../assets/logo.png";
 
 export default function LandingFooter() {
   return (

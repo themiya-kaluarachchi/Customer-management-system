@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaTimes, FaChevronRight } from "react-icons/fa";
-import logo from "../../../public/logo.png";
+import logo from "../../assets/logo.png";
 import navItems from "./navItems";
 
 export default function SidebarContent({ onClose }) {
