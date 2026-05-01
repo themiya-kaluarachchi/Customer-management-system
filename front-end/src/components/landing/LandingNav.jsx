@@ -4,8 +4,8 @@ import logo from "../../../public/logo.png";
 export default function LandingNav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 border-b border-white/5 bg-[#0a0f1e]/80 backdrop-blur-md">
-      <div className="flex items-center gap-3">
-        <img src={logo} alt="CMS Lanka" className="w-8 h-8 rounded-lg object-cover" />
+      <div className="flex items-center gap-1">
+        <img src={logo} alt="CMS Lanka" className="w-12 h-12 rounded-lg object-cover" />
         <span className="text-white font-bold text-sm tracking-wide">CMS Lanka</span>
       </div>
       <Link
