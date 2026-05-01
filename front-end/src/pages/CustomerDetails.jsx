@@ -89,10 +89,10 @@ export default function CustomerDetails() {
             <p className="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-1">
               Personal Information
             </p>
-            <InfoRow icon={FaUser}        label="Full Name"     value={customer.name} />
-            <InfoRow icon={FaIdCard}      label="NIC Number"    value={customer.nic} />
+            <InfoRow icon={FaUser} label="Full Name" value={customer.name} />
+            <InfoRow icon={FaIdCard}label="NIC Number"  value={customer.nic} />
             <InfoRow icon={FaCalendarAlt} label="Date of Birth" value={customer.dob} />
-            <InfoRow icon={FaPhone}       label="Phone"         value={customer.phones?.[0]?.number} />
+            <InfoRow icon={FaPhone}  label="Phone"   value={customer.phones?.[0]?.number} />
           </div>
 
           {customer.addresses?.[0]?.line1 && (

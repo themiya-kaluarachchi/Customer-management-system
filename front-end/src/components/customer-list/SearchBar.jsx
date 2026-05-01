@@ -1,16 +1,5 @@
 import { FaSearch, FaTimes, FaFileExcel } from "react-icons/fa";
 
-/**
- * SearchBar
- * Props:
- *  - searchQuery  : string  — current search text
- *  - onChange     : fn(value) — called on every keystroke (live filter)
- *  - onClear      : fn()   — clears search
- *  - onExport     : fn()   — triggers Excel export / download
- *  - exporting    : bool   — shows spinner on export button while downloading
- *  - totalShown   : number — how many records currently visible (after filter)
- *  - totalAll     : number — total records before filter
- */
 export default function SearchBar({
   searchQuery,
   onChange,
@@ -43,7 +32,6 @@ export default function SearchBar({
             placeholder="Search by name or NIC…"
             value={searchQuery}
             onChange={(e) => onChange(e.target.value)}
-            // No onKeyDown needed — filtering is live (on every keystroke)
           />
         </div>
 
@@ -82,7 +70,7 @@ export default function SearchBar({
         className="flex items-center gap-2 text-white px-4 py-2.5 rounded-xl text-sm
           font-medium shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed
           hover:-translate-y-0.5"
-        style={{ backgroundColor: "#217346" }} // Excel green — universally recognised
+        style={{ backgroundColor: "#217346" }} 
         onMouseEnter={(e) => {
           if (!exporting) e.currentTarget.style.backgroundColor = "#185c38";
         }}

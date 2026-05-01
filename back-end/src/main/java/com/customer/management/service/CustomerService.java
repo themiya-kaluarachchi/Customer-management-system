@@ -114,7 +114,7 @@ public class CustomerService {
         if (customer == null || member == null) return null;
         if (customer.getId().equals(memberId)) return null; // can't link to self
 
-        // Link both directions so the relationship is symmetric
+
         if (!customer.getFamilyMembers().contains(member)) {
             customer.getFamilyMembers().add(member);
         }
@@ -133,7 +133,7 @@ public class CustomerService {
 
         if (customer == null || member == null) return null;
 
-        // Remove both directions
+
         customer.getFamilyMembers().remove(member);
         member.getFamilyMembers().remove(customer);
 

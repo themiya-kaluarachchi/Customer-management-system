@@ -17,10 +17,10 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const total       = customers.length;
-  const withPhone   = customers.filter((c) => c.phones?.length).length;
+  const total = customers.length;
+  const withPhone = customers.filter((c) => c.phones?.length).length;
   const withAddress = customers.filter((c) => c.addresses?.length).length;
-  const recent      = [...customers].sort((a, b) => b.id - a.id).slice(0, 5);
+  const recent = [...customers].sort((a, b) => b.id - a.id).slice(0, 5);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",

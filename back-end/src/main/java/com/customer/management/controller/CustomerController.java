@@ -53,9 +53,7 @@ public class CustomerController {
         customerService.deleteCustomer(id);
     }
 
-    // ── NEW: Search by name or NIC ────────────────────────────────────────────
-    // GET /api/customers/search?query=Themiya
-    // Returns all customers whose name OR nic contains the query (case-insensitive)
+
     @GetMapping("/search")
     public ResponseEntity<List<Customer>> searchCustomers(
             @RequestParam(name = "query", defaultValue = "") String query) {
@@ -66,9 +64,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.searchByNameOrNic(query));
     }
 
-    // ── NEW: Export all customers to Excel ────────────────────────────────────
-    // GET /api/customers/export
-    // Returns a .xlsx file download
+
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportToExcel() {
         try {
@@ -92,7 +88,7 @@ public class CustomerController {
         }
     }
 
-    // ── Existing: Bulk upload ─────────────────────────────────────────────────
+    // ── Bulk upload ───
     @PostMapping("/upload")
     public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
 
@@ -122,7 +118,7 @@ public class CustomerController {
         }
     }
 
-    // ── Existing: Family member endpoints ─────────────────────────────────────
+    // ── Family member endpoints ─────
     @GetMapping("/{id}/family")
     public ResponseEntity<List<Customer>> getFamilyMembers(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.getFamilyMembers(id));

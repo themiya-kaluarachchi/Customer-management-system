@@ -21,7 +21,7 @@ export default function UploadExcel() {
 
     API.post("/customers/upload", formData)
       .then((res) => {
-        setResult(res.data);  // now always { totalRows, successCount, failureCount, errors[] }
+        setResult(res.data);  
         if (res.data.failureCount === 0) {
           toast.success(`Imported ${res.data.successCount} records successfully`);
         } else {
@@ -29,7 +29,6 @@ export default function UploadExcel() {
         }
       })
       .catch((err) => {
-        // backend sends UploadResponse even on badRequest now
         const data = err.response?.data;
         if (data && typeof data === "object") {
           setResult(data);

@@ -20,7 +20,7 @@ public class ExcelExportHelper {
 
             Sheet sheet = workbook.createSheet("Customers");
 
-            // ── Header style ──────────────────────────────────────────
+            // ── Header style
             CellStyle headerStyle = workbook.createCellStyle();
             headerStyle.setFillForegroundColor(IndexedColors.TEAL.getIndex());
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -30,12 +30,12 @@ public class ExcelExportHelper {
             headerFont.setColor(IndexedColors.WHITE.getIndex());
             headerStyle.setFont(headerFont);
 
-            // ── Date cell style ───────────────────────────────────────
+            // ── Date cell style
             CellStyle dateStyle = workbook.createCellStyle();
             CreationHelper creationHelper = workbook.getCreationHelper();
             dateStyle.setDataFormat(creationHelper.createDataFormat().getFormat("yyyy-mm-dd"));
 
-            // ── Headers ───────────────────────────────────────────────
+            // ── Headers
             String[] headers = {
                     "ID", "Name", "NIC", "Date of Birth",
                     "Phone Numbers", "Address Line 1", "Address Line 2",
@@ -50,7 +50,7 @@ public class ExcelExportHelper {
                 sheet.setColumnWidth(i, 18 * 256);
             }
 
-            // ── Data rows ─────────────────────────────────────────────
+            // ── Data rows
             CellStyle altStyle = workbook.createCellStyle();
             altStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
             altStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -78,7 +78,7 @@ public class ExcelExportHelper {
                     row.createCell(3).setCellValue("");
                 }
 
-                // Phones — join with " | "
+                // Phones
                 String phones = "";
                 if (c.getPhones() != null && !c.getPhones().isEmpty()) {
                     phones = c.getPhones().stream()
@@ -89,7 +89,7 @@ public class ExcelExportHelper {
                 }
                 row.createCell(4).setCellValue(phones);
 
-                // Address (first address only)
+                // Address
                 if (c.getAddresses() != null && !c.getAddresses().isEmpty()) {
                     var addr = c.getAddresses().get(0);
                     row.createCell(5).setCellValue(safe(addr.getLine1()));

@@ -11,15 +11,15 @@ import Pagination from "../components/customer-list/Pagination";
 const PAGE_SIZE = 10;
 
 export default function CustomerList() {
-  const [customers, setCustomers]       = useState([]);      // full list from API
-  const [searchQuery, setSearchQuery]   = useState("");      // live search text
-  const [loading, setLoading]           = useState(true);
+  const [customers, setCustomers] = useState([]);      
+  const [searchQuery, setSearchQuery] = useState("");      
+  const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [currentPage, setCurrentPage]   = useState(1);
-  const [exporting, setExporting]       = useState(false);   // export button state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [exporting, setExporting] = useState(false);   
   const location = useLocation();
 
-  // ── Fetch all customers ──────────────────────────────────────────────────────
+  // ── Fetch all customers ─────
   const fetchCustomers = () => {
     setLoading(true);
     API.get("/customers")
@@ -45,8 +45,7 @@ export default function CustomerList() {
     return () => { isMounted = false; };
   }, [location.pathname]);
 
-  // ── Live filter: name or NIC, client-side ────────────────────────────────────
-  // useMemo so it only recalculates when customers or searchQuery changes
+  
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return customers;
@@ -57,19 +56,19 @@ export default function CustomerList() {
     );
   }, [customers, searchQuery]);
 
-  // ── Clear search ─────────────────────────────────────────────────────────────
+  // ── Clear search ───
   const handleClear = () => {
     setSearchQuery("");
     setCurrentPage(1);
   };
 
-  // Reset to page 1 whenever search query changes
+  
   const handleSearchChange = (value) => {
     setSearchQuery(value);
     setCurrentPage(1);
   };
 
-  // ── Delete (logic unchanged) ─────────────────────────────────────────────────
+  // ── Delete (logic unchanged) ───
   const confirmDelete = () => {
     if (!deleteTarget) return;
     API.delete(`/customers/${deleteTarget.id}`)
@@ -81,14 +80,12 @@ export default function CustomerList() {
       .catch(() => toast.error("Delete failed"));
   };
 
-  // ── Export to Excel ──────────────────────────────────────────────────────────
-  // Calls GET /api/customers/export — the backend streams back an .xlsx file.
-  // We use a hidden <a> trick to trigger the browser download dialog.
+  // ── Export to Excel ─
   const handleExport = async () => {
     setExporting(true);
     try {
       const response = await API.get("/customers/export", {
-        responseType: "blob",                         // important — treat response as binary
+        responseType: "blob",                      
       });
 
       // Build a temporary object URL and click it
@@ -100,7 +97,7 @@ export default function CustomerList() {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      window.URL.revokeObjectURL(url);               // free memory
+      window.URL.revokeObjectURL(url);             
 
       toast.success("Export downloaded!");
     } catch {
@@ -110,7 +107,7 @@ export default function CustomerList() {
     }
   };
 
-  // ── Pagination ───────────────────────────────────────────────────────────────
+  // ── Pagination ───
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated  = filtered.slice(
     (currentPage - 1) * PAGE_SIZE,
